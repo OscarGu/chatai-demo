@@ -2,7 +2,7 @@ langchain
 openai==0.27.8
 pypdf
 pinecone-client
-tiktoken==0.4.0
+tiktoken<=0.4.0
 fastapi==0.97.0
 pydantic
 python-dotenv
