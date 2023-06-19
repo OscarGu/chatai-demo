@@ -114,16 +114,19 @@ def load_existing_docs(index_name: str, namespace: str):
 
 
 def getAIChatbot(index_name: str, namespace: str):
+    '''
+        return: conversation_chain
+    '''
     docsearch = load_existing_docs(index_name=index_name, namespace=namespace)
-    llm = OpenAI(temperature=0)
+    chat_llm = OpenAI(temperature=0)
 
-    memory = ConversationBufferMemory(
+    chat_buffer_memory = ConversationBufferMemory(
         memory_key="chat_history", return_messages=True)
 
     conversation_chain = ConversationalRetrievalChain.from_llm(
-        llm=llm,
+        llm=chat_llm,
         retriever=docsearch.as_retriever(),
-        memory=memory,
+        memory=chat_buffer_memory,
         # verbose=True
     )
     return conversation_chain
