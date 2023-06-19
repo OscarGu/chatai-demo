@@ -93,7 +93,7 @@ def chatWithDoc(index_name: str, namespace: str, query: str):
         # verbose=True
     )
     chat_history=[]
-    result = chatbot({"question": query, "chat_history": chat_history})
+    result = conversation_chain({"question": query, "chat_history": chat_history})
     # result = conversation_chain({"question": query})
     return result
 
