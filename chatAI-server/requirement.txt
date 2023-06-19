@@ -1,0 +1,12 @@
+langchain
+openai
+pypdf
+pinecone-client
+tiktoken
+flask
+flask_cors
+fastapi
+pydantic
+python-dotenv
+uvicorn
+python-multipart
