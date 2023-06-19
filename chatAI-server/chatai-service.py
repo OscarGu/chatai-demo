@@ -1,13 +1,13 @@
-import os
-from dotenv import load_dotenv, dotenv_values
+"""
+Filename: chatai-service.py
+Author: Oscar Gu
+Contact: gudanyang@live.cn
+"""
 
-import json
-from requests import request
-from fastapi import FastAPI, Path
-from fastapi import File, UploadFile
-import uvicorn
-from typing import Optional
-from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
+
+from fastapi import FastAPI
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -20,7 +20,7 @@ from langchain.chains import ConversationalRetrievalChain
 
 import pinecone
 
-#uvicorn chatai-service:app --reload
+# uvicorn chatai-service:app --reload
 app = FastAPI(title="aichatbot-backend-service", description="Our backend services provide a robust and scalable solution, \
               enabling seamless integration of conversational AI capabilities into your system. By leveraging the extensive \
               language understanding and generation capabilities of GPT-3.5, our chatbot backend services can comprehend and \
@@ -53,10 +53,11 @@ memory = ConversationBufferMemory(
     - param index_name: Pinecone index
     - param namespace: namespace: Pinecone namespace with the specific index
 '''
-@app.post("/embedFile/", tags=["VectorDB(Pinecone) Operations"], summary=("Embed file into vector DB") ,
+@app.post("/embedFile/", tags=["VectorDB(Pinecone) Operations"], summary=("Embed file into vector DB"),
           description="upload (pdf)document, split the document into chunks and embed it into vector database(pinecone).")
 def embedFile(filepath: str, index_name: str, namespace: str):
-    doc = getFileLoader(filepath)
+    """Return the pathname of the KOS root directory."""
+    doc = get_file_loader(filepath)
     docs = getSplitDocs(doc)
     docsearch = Pinecone.from_documents(
         documents=docs, embedding=embeddings, index_name=index_name, namespace=namespace)
@@ -71,6 +72,9 @@ def embedFile(filepath: str, index_name: str, namespace: str):
 # ws - remove index from vector databases
 @app.delete("/delete-namespace/{index_name}/{namespace}", tags=["VectorDB(Pinecone) Operations"])
 def delete_index(index_name: str, namespace: str):
+    """
+        Remove content by namespace in an index
+    """
     pinecone.init(
         api_key=PINECONE_API_KEY,  # find at app.pinecone.io
         environment=PINECONE_API_ENV,  # next to api key in console
@@ -135,7 +139,7 @@ def talkWithAIChatbot(index_name, namespace, useuserID):
     bot = getAIChatbot(index_name, namespace)
 
 
-def getFileLoader(filepath: str):
+def get_file_loader(filepath: str):
     print(f'get file from {filepath}')
     loader = PyPDFLoader(filepath)
     document = loader.load()
@@ -143,11 +147,11 @@ def getFileLoader(filepath: str):
     return document
 
 
-def getSplitDocs(document: list):
+def getSplitDocs(document: list, chunk_size = 1000, chunk_overlap=100):
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=100, length_function=len)
+        chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=len)
     print(
-        f'begin to use splitter with chunk_size:{text_splitter._chunk_size}, chunk_overlap:{text_splitter._chunk_overlap}, to split the file.')
+        f'begin to use splitter with chunk_size:{chunk_size}, chunk_overlap:{chunk_overlap}, to split the file.')
     docs = text_splitter.split_documents(document)
     print(f'Now you have {len(docs)} split documents')
     return docs
@@ -157,21 +161,3 @@ def getSplitDocs(document: list):
 def index():
     return {"Server Info": "The services are running successfully.",
             "Doc Info": "Please go to serverurl/docs to visit the help documents."}
-
-
-'''
-chatbot = getAIChatbot("doc-chat","EA-01")
-query = "please provide me three key takeaways in 70 words."
-# chat_history=[]
-# result = chatbot({"question": query, "chat_history": chat_history})
-result = chatbot({"question": query})
-print(result)
-print(result['answer'])
-
-#chat_history = [(query, result["answer"])]
-query = "shorten the takeaways into 20 words."
-# result = chatbot({"question": query, "chat_history": chat_history})
-result = chatbot({"question": query})
-print(result)
-print(result['answer'])
-'''
