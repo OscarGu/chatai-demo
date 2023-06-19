@@ -90,6 +90,7 @@ def chatWithDoc(index_name: str, namespace: str, query: str):
         llm=llm,
         retriever=docsearch.as_retriever(),
         memory=memory,
+        chain_type="map_reduce"        
         # verbose=True
     )
     chat_history=[]
