@@ -1,4 +1,4 @@
-langchain
+langchain==0.0.202
 openai==0.27.8
 pypdf
 pinecone-client
