@@ -92,9 +92,9 @@ def chatWithDoc(index_name: str, namespace: str, query: str):
         memory=memory,
         # verbose=True
     )
-    # chat_history=[]
-    # result = chatbot({"question": query, "chat_history": chat_history})
-    result = conversation_chain({"question": query})
+    chat_history=[]
+    result = chatbot({"question": query, "chat_history": chat_history})
+    # result = conversation_chain({"question": query})
     return result
 
 # load existing index from Pinecone
