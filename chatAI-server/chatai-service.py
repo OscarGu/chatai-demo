@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -53,6 +54,12 @@ memory = ConversationBufferMemory(
     - param index_name: Pinecone index
     - param namespace: namespace: Pinecone namespace with the specific index
 '''
+
+@app.get("/")
+async def docpage():
+    return RedirectResponse("/docs")
+    
+
 @app.post("/embedFile/", tags=["VectorDB(Pinecone) Operations"], summary=("Embed file into vector DB"),
           description="upload (pdf)document, split the document into chunks and embed it into vector database(pinecone).")
 def embedFile(filepath: str, index_name: str, namespace: str):
@@ -165,3 +172,13 @@ def getSplitDocs(document: list, chunk_size = 1000, chunk_overlap=100):
 def index():
     return {"Server Info": "The services are running successfully.",
             "Doc Info": "Please go to serverurl/docs to visit the help documents."}
+
+
+def createChatbot(name, type, payload):
+    '''
+    params:
+    - chatbotName (string, required): The name of the chatbot to be created.
+    - botType(string, required): free-chat, sourceBy
+    - payload (dict, optional): The text data for the chatbot. This field is subject to the character limit based on your plan.
+    '''    
+    pass
