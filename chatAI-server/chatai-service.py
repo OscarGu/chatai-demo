@@ -77,7 +77,7 @@ def embedFile(filepath: str, index_name: str, namespace: str):
 
 
 # ws - remove index from vector databases
-@app.delete("/delete-namespace/{index_name}/{namespace}", tags=["VectorDB(Pinecone) Operations"])
+@app.delete("/delete-namespace/{index_name}/{namespace}", tags=["VectorDB Operations"])
 def delete_index(index_name: str, namespace: str):
     """
         Remove content by namespace in an index
