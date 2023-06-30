@@ -60,7 +60,7 @@ async def docpage():
     return RedirectResponse("/docs")
     
 
-@app.post("/embedFile/", tags=["VectorDB(Pinecone) Operations"], summary=("Embed file into vector DB"),
+@app.post("/embedFile/", tags=["VectorDB Operations"], summary=("Embed file into vector DB"),
           description="upload (pdf)document, split the document into chunks and embed it into vector database(pinecone).")
 def embedFile(filepath: str, index_name: str, namespace: str):
     """Return the pathname of the KOS root directory."""
